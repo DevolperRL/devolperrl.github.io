@@ -1,0 +1,116 @@
+/* General Styles */
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f8f9fa;
+    color: #343a40;
+}
+
+header {
+    background-color: #17a2b8; /* Updated to teal */
+    color: white;
+    text-align: center;
+    padding: 15px 0;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    margin: 0;
+}
+
+nav ul li {
+    margin: 0 15px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+nav ul li a:hover {
+    text-decoration: underline;
+}
+
+/* Main Styles */
+main {
+    padding: 20px;
+    max-width: 1200px;
+    margin: auto;
+}
+
+.forum-category {
+    margin-bottom: 30px;
+    padding: 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.forum-category h2 {
+    margin-bottom: 15px;
+    border-bottom: 2px solid #17a2b8; /* Updated to teal */
+    padding-bottom: 5px;
+    color: #17a2b8; /* Updated to teal */
+}
+
+.forum-post {
+    border-bottom: 1px solid #e9ecef;
+    padding: 10px 0;
+    transition: background-color 0.2s;
+}
+
+.forum-post:last-child {
+    border-bottom: none;
+}
+
+.forum-post h3 {
+    margin: 0;
+    font-size: 18px;
+}
+
+.forum-post h3 a {
+    text-decoration: none;
+    color: #17a2b8; /* Updated to teal */
+}
+
+.forum-post h3 a:hover {
+    text-decoration: underline;
+}
+
+.forum-post p {
+    margin: 5px 0 0;
+    color: #6c757d;
+}
+
+.forum-post:hover {
+    background-color: #f1f3f5;
+}
+
+/* Footer Styles */
+footer {
+    text-align: center;
+    padding: 10px 0;
+    background: #17a2b8; /* Updated to teal */
+    color: white;
+}
+
+/* Buttons */
+.category-button {
+    background-color: #17a2b8; /* Updated to teal */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.2s;
+}
+
+.category-button:hover {
+    background-color: #138496; /* Slightly darker teal */
+    transform: scale(1.05);
+}

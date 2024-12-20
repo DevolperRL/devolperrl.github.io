@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forum Tutorials</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Forum Tutorials</h1>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="projects.html">Projects</a></li>
+                <li><a href="tutorials.html">Tutorials</a></li>
+            </ul>
+        </nav>
+    </header>
+    <main>
+        <!-- Step 1: Categories -->
+        <section id="categories">
+            <div class="forum-category">
+                <h2>Coding Tutorials</h2>
+                <p>Explore topics like HTML, CSS, and JavaScript.</p>
+                <button class="category-button" onclick="showTutorials('coding')">View Tutorials</button>
+            </div>
+            <div class="forum-category">
+                <h2>Modeling Tutorials</h2>
+                <p>Dive into 3D modeling, character design, and more.</p>
+                <button class="category-button" onclick="showTutorials('modeling')">View Tutorials</button>
+            </div>
+            <div class="forum-category">
+                <h2>Design Tutorials</h2>
+                <p>Learn about graphic design, video editing, and more.</p>
+                <button class="category-button" onclick="showTutorials('design')">View Tutorials</button>
+            </div>
+        </section>
+
+        <!-- Step 2: Tutorials -->
+        <section id="tutorials" class="hidden">
+            <div class="forum-category">
+                <h2 id="tutorial-category-title"></h2>
+                <button class="category-button" onclick="goBack()">Back to Categories</button>
+                <div id="tutorial-list"></div>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <p>&copy; 2023 Forum Tutorials. All rights reserved.</p>
+    </footer>
+    <script src="script.js"></script>
+</body>
+</html>
