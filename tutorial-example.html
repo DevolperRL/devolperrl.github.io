@@ -3,80 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tutorial Example</title>
+    <title>Multi-Language Code Highlighting</title>
     <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.0/themes/prism.min.css" />
-    <style>
-        .code-box {
-            background-color: #f5f5f5;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            padding: 15px;
-            overflow-x: auto;
-            margin: 20px 0;
-        }
-        img {
-            max-width: 100%;
-            height: auto;
-            margin: 20px 0;
-        }
-    </style>
+    
+    <!-- Include Prism.js library -->
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/themes/prism-tomorrow.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/prism.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-html.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-css.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-javascript.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.29.0/components/prism-python.min.js"></script>
 </head>
 <body>
-    <header>
-        <h1>Tutorial: Building a Simple Web Page</h1>
-        <nav>
-            <ul>
-                <li><a href="index.html">Home</a></li>
-                <li><a href="projects.html">Projects</a></li>
-                <li><a href="tutorials.html">Tutorials</a></li>
-            </ul>
-        </nav>
+    <header class="header">
+        <div class="container">
+            <h1 class="title">Tutorial: Examples</h1>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="projects.html" class="nav-link">Projects</a></li>
+                    <li><a href="tutorials.html" class="nav-link">Tutorials</a></li>
+                </ul>
+            </nav>
+        </div>
     </header>
     <main>
-        <section>
-            <h2>Project Link</h2>
-            <p>You can download the project from my GitHub repository:</p>
-            <a href="https://github.com/yourusername/yourproject" target="_blank" class="button">GitHub Repository</a>
+        <section class="intro-section">
+            <h2>Introduction</h2>
+            <p>In this tutorial, we will explore how to highlight code from multiple programming languages using <strong>Prism.js</strong>. This will help you create a more readable and visually appealing code presentation on your website.</p>
+            <p>By using Prism.js, you can easily highlight code written in languages such as <strong>HTML</strong>, <strong>CSS</strong>, <strong>JavaScript</strong>, <strong>Python</strong>, and many more.</p>
         </section>
 
-        <section>
-            <h2>Code Example</h2>
-            <div class="code-box">
-                <pre><code class="language-html">
-&lt;!DOCTYPE html&gt;
-&lt;html lang="en"&gt;
-&lt;head&gt;
-    &lt;meta charset="UTF-8"&gt;
-    &lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;
-    &lt;title&gt;My Simple Web Page&lt;/title&gt;
-&lt;/head&gt;
-&lt;body&gt;
-    &lt;h1&gt;Hello, World!&lt;/h1&gt;
-    &lt;p&gt;This is a simple web page.&lt;/p&gt;
-&lt;/body&gt;
-&lt;/html&gt;
+        <section class="tutorial-section">
+            <h2>How to Use Prism.js</h2>
+            <p>Prism.js automatically detects the language of your code if you apply the appropriate class to your <code>&lt;pre&gt;&lt;code&gt;</code> tags. Below, we will demonstrate code highlighting for multiple languages.</p>
+
+            <div class="code-example">
+                <h3>Example 1: Python Code</h3>
+                <p>This is a simple Python function that prints "Hello, World!" to the console.</p>
+                <pre><code class="language-python">
+def greet():
+    print("Hello, world!")
+
+greet()
                 </code></pre>
             </div>
-            <p>This code creates a simple HTML page with a heading and a paragraph. You can modify the content as needed.</p>
-        </section>
 
-        <section>
-            <h2>Images</h2>
-            <p>Here is an example image related to the project:</p>
-            <img src="path/to/your/image.jpg" alt="Example Image">
-            <p>Make sure to replace the image source with the actual path to your image.</p>
-        </section>
+            <div class="image-example">
+                <h3>Example: Code Editor Visualization</h3>
+                <p>Below is an image showing an example of a code editor:</p>
+                <img src="https://via.placeholder.com/500x300?text=Code+Editor+Example" alt="Code Editor Example" />
+            </div>
 
-        <section>
-            <h2>Explanation</h2>
-            <p>In this tutorial, we will learn how to create a simple web page using HTML. The code provided above is the basic structure of an HTML document. You can expand upon this by adding CSS for styling and JavaScript for interactivity.</p>
+            <h3>Conclusion</h3>
+            <p>By following this tutorial, you can easily display syntax-highlighted code snippets for multiple programming languages on your site. Make sure to include the proper language classes and use Prism.js for smooth integration.</p>
         </section>
     </main>
-    <footer>
-        <p>&copy; 2023 [Your Name]. All rights reserved.</p>
+
+    <footer class="footer">
+        <p>&copy; 2023 Code Snippets Tutorial. All rights reserved.</p>
     </footer>
-    <script src="script.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.0/prism.min.js"></script>
 </body>
 </html>
