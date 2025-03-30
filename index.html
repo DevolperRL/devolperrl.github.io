@@ -3,47 +3,323 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Portfolio</title>
-    <link rel="stylesheet" href="styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <title>BlizLua - Advanced X-Plane Scripting</title>
+    <style>
+        :root {
+            --primary: #6366f1;
+            --secondary: #3b82f6;
+            --accent: #10b981;
+            --dark: #0f172a;
+            --light: #f8fafc;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', system-ui, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1rem;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+
+        nav {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary);
+        }
+
+        .hero {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 12rem 2rem 6rem;
+            text-align: center;
+            clip-path: polygon(0 0, 100% 0, 100% 90%, 0 100%);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            animation: slideUp 1s ease;
+        }
+
+        .features {
+            max-width: 1200px;
+            margin: -4rem auto 4rem;
+            padding: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .feature-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .download-section {
+            background: linear-gradient(45deg, var(--dark), #1e293b);
+            color: white;
+            padding: 6rem 2rem;
+            text-align: center;
+            clip-path: polygon(0 10%, 100% 0, 100% 100%, 0 100%);
+        }
+
+        .download-btn {
+            background: linear-gradient(45deg, var(--accent), #059669);
+            color: white;
+            padding: 1rem 2.5rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: transform 0.3s ease;
+        }
+
+        .download-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .requirements {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 800px;
+            border-radius: 1rem;
+            backdrop-filter: blur(10px);
+        }
+
+        footer {
+            background-color: var(--dark);
+            color: white;
+            text-align: center;
+            padding: 4rem 2rem;
+            margin-top: 6rem;
+        }
+
+        .docs-section {
+            max-width: 1200px;
+            margin: 4rem auto;
+            padding: 2rem;
+        }
+
+        .quickstart-guide {
+            background: white;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            margin: 2rem 0;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 8rem 1rem 4rem;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <header class="header">
-        <div class="container">
-            <h1 class="title">Welcome to My Portfolio</h1>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="index.html" class="nav-link">Home</a></li>
-                    <li><a href="projects.html" class="nav-link">Projects</a></li>
-                    <li><a href="tutorials.html" class="nav-link">Tutorials</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-    <main class="main">
-        <section class="about">
-            <h2>About Me</h2>
-            <p>Hi! I'm <strong>[Your Name]</strong>, a web developer passionate about creating beautiful and functional websites.</p>
-        </section>
-        <section class="projects">
-            <h2>Featured Projects</h2>
-            <div class="project-grid">
-                <div class="project-card">
-                    <h3>Project 1</h3>
-                    <p>A modern website with cutting-edge design.</p>
-                    <a href="#" class="button">View Project</a>
-                </div>
-                <div class="project-card">
-                    <h3>Project 2</h3>
-                    <p>An innovative app designed for productivity.</p>
-                    <a href="#" class="button">View Project</a>
-                </div>
-                <!-- Add more project cards as needed -->
+    <header>
+        <nav>
+            <h1 style="color: var(--primary);">BlizLua</h1>
+            <div class="nav-links">
+                <a href="#home">Home</a>
+                <a href="#download">Download</a>
+                <a href="#docs">Documentation</a>
+                <a href="#about">About</a>
             </div>
-        </section>
-    </main>
-    <footer class="footer">
-        <p>&copy; 2023 <strong>[Your Name]</strong>. All rights reserved.</p>
+        </nav>
+    </header>
+
+    <section class="hero" id="home">
+        <h1>Next-Level X-Plane Scripting</h1>
+        <p>Harness the power of Lua for advanced aircraft customization and systems simulation</p>
+        <a href="#download" class="download-btn" style="margin-top: 2rem;">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                <polyline points="7 10 12 15 17 10"></polyline>
+                <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Get Started
+        </a>
+    </section>
+
+    <section class="features">
+        <div class="feature-card">
+            <h3>Lua 5.4 Runtime</h3>
+            <p>Full Lua 5.4 implementation with extended X-Plane API support</p>
+        </div>
+        <div class="feature-card">
+            <h3>Real-time Debugging</h3>
+            <p>Integrated debugging tools with live variable inspection</p>
+        </div>
+        <div class="feature-card">
+            <h3>Full API Access</h3>
+            <p>Complete access to X-Plane's SDK through intuitive Lua bindings</p>
+        </div>
+        <div class="feature-card">
+            <h3>Cross-Platform</h3>
+            <p>Supports Windows (MacOS and Linux will come soon). Compatible with X-Plane 11/12</p>
+        </div>
+    </section>
+
+    <section class="download-section" id="download">
+        <h2>Download BlizLua</h2>
+        <p>Version 0.1 - Released April 2025</p>
+        
+        <div class="requirements">
+            <h3>System Requirements</h3>
+            <ul>
+                <li>X-Plane 11 or 12</li>
+                <li>Windows 10+</li>
+                <li>4GB RAM minimum</li>
+                <li>50MB available storage</li>
+            </ul>
+        </div>
+
+        <a href="/download/blizlua_v12.1.zip" class="download-btn">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <path d="M7 10l5 5 5-5M12 15V3"/>
+            </svg>
+            Download Now (23,3MB)
+        </a>
+    </section>
+
+    <section class="docs-section" id="docs">
+        <div class="quickstart-guide">
+            <h2>Quick Start Guide</h2>
+            <ol>
+                <li>Extract the BlizLua folder to your X-Plane plugins directory</li>
+                <li>Open the main.lua in data>scripts</li>
+                <li>Reload plugins through X-Plane's developer menu</li>
+                <li>Access real-time debugging console</li>
+            </ol>
+        </div>
+
+        <div class="quickstart-guide" style="margin-top: 2rem;">
+            <h2>API Reference</h2>
+            <p>Full documentation of available X-Plane API functions and hooks</p>
+            <a href="BlizLua/doc.html" class="download-btn" style="background: var(--primary); margin-top: 1rem;">
+                View Full Documentation
+            </a>
+        </div>
+    </section>
+
+    <footer>
+        <p>©2025 BlizLua. Not affiliated with Laminar Research.</p>
+        <p>Lua is a registered trademark of PUC-Rio</p>
     </footer>
+
+    <script>
+        // Enhanced smooth scrolling with offset
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                const offset = 80;
+                
+                window.scrollTo({
+                    top: target.offsetTop - offset,
+                    behavior: 'smooth'
+                });
+            });
+        });
+
+        // Feature card animation on scroll
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.feature-card').forEach(card => {
+            observer.observe(card);
+        });
+
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('header');
+            if (window.scrollY > 100) {
+                header.style.background = 'rgba(255, 255, 255, 0.98)';
+                header.style.boxShadow = '0 4px 20px rgba(0,0,0,0.1)';
+            } else {
+                header.style.background = 'rgba(255, 255, 255, 0.95)';
+                header.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+            }
+        });
+    </script>
 </body>
 </html>
