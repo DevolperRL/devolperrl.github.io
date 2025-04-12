@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificates Portfolio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+
+        .certificate-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .certificate-card {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .certificate-card:hover {
+            transform: translateY(-5px);
+        }
+
+        .certificate-thumbnail {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 3px solid #3498db;
+        }
+
+        .certificate-info {
+            padding: 20px;
+        }
+
+        .certificate-title {
+            color: #2c3e50;
+            margin-bottom: 8px;
+            font-size: 1.2rem;
+        }
+
+        .certificate-org {
+            color: #7f8c8d;
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        /* Lightbox Styles */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            padding: 20px;
+        }
+
+        .lightbox.active {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .lightbox-img {
+            max-width: 90%;
+            max-height: 90%;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: white;
+            font-size: 2rem;
+            cursor: pointer;
+            background: none;
+            border: none;
+        }
+
+	</style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Professional Certifications</h1>
+            <p>Click any certificate to view full size</p>
+        </header>
+
+		<div class="certificate-grid">
+			<!-- Business Analysis -->
+			<div class="certificate-card" onclick="openLightbox('https://coursera-certificate-images.s3.amazonaws.com/B6Q5O01SC32S')">
+				<img src="https://coursera-certificate-images.s3.amazonaws.com/B6Q5O01SC32S" alt="Certificate" class="certificate-thumbnail">
+				<div class="certificate-info">
+					<h3 class="certificate-title">Business Analysis<br>→ Process Management</h3>
+					<p class="certificate-org">Project Management Institute</p>
+					<p class="date">Issued: April 2024</p>
+				</div>
+			</div>
+
+			<!-- Excel Mastery -->
+			<div class="certificate-card" onclick="openLightbox('https://coursera-certificate-images.s3.amazonaws.com/ON4OKQYHB3IW')">
+				<img src="https://coursera-certificate-images.s3.amazonaws.com/ON4OKQYHB3IW" alt="Certificate" class="certificate-thumbnail">
+				<div class="certificate-info">
+					<h3 class="certificate-title">Advanced Excel<br>→ Lookup & Text Functions</h3>
+					<p class="certificate-org">Microsoft Learn</p>
+					<p class="date">Issued: April 2024</p>
+				</div>
+			</div>
+
+			<!-- WordPress -->
+			<div class="certificate-card" onclick="openLightbox('https://coursera-certificate-images.s3.amazonaws.com/S4H80SD9Q3B0')">
+				<img src="https://coursera-certificate-images.s3.amazonaws.com/S4H80SD9Q3B0" alt="Certificate" class="certificate-thumbnail">
+				<div class="certificate-info">
+					<h3 class="certificate-title">Web Development<br>→ WordPress Essentials</h3>
+					<p class="certificate-org">WordPress Foundation</p>
+					<p class="date">Issued: April 2024</p>
+				</div>
+			</div>
+
+			<!-- Optional 4th Certificate -->
+			<div class="certificate-card" onclick="openLightbox('https://coursera-certificate-images.s3.amazonaws.com/1P9L2WP1B851')">
+				<img src="https://coursera-certificate-images.s3.amazonaws.com/1P9L2WP1B851" alt="Certificate" class="certificate-thumbnail">
+				<div class="certificate-info">
+					<h3 class="certificate-title">Google AD<br>→ Google Ads for Beginners</h3>
+					<p class="certificate-org">Google Ad</p>
+					<p class="date">Issued: April 2024</p>
+				</div>
+			</div>
+		</div>
+    </div>
+
+    <!-- Lightbox -->
+    <div class="lightbox" onclick="closeLightbox()">
+        <button class="close-btn">&times;</button>
+        <img src="" alt="Full Certificate" class="lightbox-img">
+    </div>
+
+    <script>
+        function openLightbox(imgSrc) {
+            const lightbox = document.querySelector('.lightbox');
+            const lightboxImg = document.querySelector('.lightbox-img');
+            lightboxImg.src = imgSrc;
+            lightbox.classList.add('active');
+        }
+
+        function closeLightbox() {
+            document.querySelector('.lightbox').classList.remove('active');
+        }
+
+        // Close lightbox when clicking outside image
+        document.querySelector('.lightbox').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeLightbox();
+            }
+        });
+
+        // Close with ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        });
+    </script>
+</body>
+</html>
