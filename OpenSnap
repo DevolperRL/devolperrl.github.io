@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OpenSnap — Beautiful Code Screenshots</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500&family=JetBrains+Mono:wght@400;500&family=Source+Code+Pro:wght@400;500&family=Inconsolata:wght@400;500&family=Inter:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/monokai.min.css" id="hlTheme">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #0f0f13;
+  --surface: #1a1a24;
+  --surface2: #22222f;
+  --border: rgba(255,255,255,0.08);
+  --border-hover: rgba(255,255,255,0.16);
+  --text: #e8e8f0;
+  --text-muted: #8888aa;
+  --text-faint: #55556a;
+  --accent: #7F77DD;
+  --accent-hover: #9B94E8;
+  --accent-dim: rgba(127,119,221,0.15);
+  --green: #28c840; --yellow: #febc2e; --red: #ff5f57;
+  --radius: 8px; --radius-lg: 12px;
+}
+html, body { height: 100%; font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.5; overflow: hidden; }
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-hover); border-radius: 3px; }
+.app { display: flex; height: 100vh; overflow: hidden; }
+.sidebar { width: 272px; flex-shrink: 0; background: var(--surface); border-right: 1px solid var(--border); display: flex; flex-direction: column; overflow: hidden; }
+.sidebar-header { padding: 16px 16px 12px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.logo { display: flex; align-items: center; gap: 8px; font-weight: 600; font-size: 15px; letter-spacing: -0.02em; }
+.logo-icon { width: 28px; height: 28px; border-radius: 7px; background: var(--accent); display: flex; align-items: center; justify-content: center; }
+.sidebar-body { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 16px; }
+.section-label { font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px; }
+.field { display: flex; flex-direction: column; gap: 5px; }
+.field label { font-size: 12px; color: var(--text-muted); }
+select, input[type="text"], textarea {
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius);
+  color: var(--text); font-family: 'Inter', sans-serif; font-size: 13px; padding: 7px 10px;
+  outline: none; transition: border-color 0.15s; width: 100%; appearance: none; -webkit-appearance: none;
+}
+select {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%238888aa' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 10px center; padding-right: 30px; cursor: pointer;
+}
+select:focus, input[type="text"]:focus, textarea:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+select:hover, input[type="text"]:hover, textarea:hover { border-color: var(--border-hover); }
+textarea { height: 145px; resize: vertical; font-family: 'Fira Code', monospace; font-size: 12px; line-height: 1.6; tab-size: 2; }
+.range-row { display: flex; align-items: center; gap: 10px; }
+.range-row input[type="range"] { flex: 1; -webkit-appearance: none; appearance: none; height: 4px; border-radius: 2px; background: var(--surface2); border: none; padding: 0; cursor: pointer; }
+.range-row input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 14px; height: 14px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+.range-val { font-size: 12px; color: var(--text-muted); min-width: 30px; text-align: right; }
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 2px 0; }
+.toggle-row span { font-size: 13px; color: var(--text-muted); }
+.toggle { position: relative; width: 36px; height: 20px; cursor: pointer; flex-shrink: 0; }
+.toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+.toggle-track { position: absolute; inset: 0; background: var(--surface2); border-radius: 10px; border: 1px solid var(--border); transition: background 0.2s; }
+.toggle input:checked ~ .toggle-track { background: var(--accent); border-color: var(--accent); }
+.toggle-thumb { position: absolute; top: 3px; left: 3px; width: 14px; height: 14px; background: #fff; border-radius: 50%; transition: left 0.2s; }
+.toggle input:checked ~ .toggle-thumb { left: 19px; }
+.swatch-grid { display: flex; gap: 5px; flex-wrap: wrap; }
+.swatch { width: 26px; height: 26px; border-radius: 7px; cursor: pointer; border: 2px solid transparent; transition: transform 0.1s; flex-shrink: 0; }
+.swatch:hover { transform: scale(1.12); }
+.swatch.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+.divider { height: 1px; background: var(--border); }
+
+/* Color picker section */
+.color-picker-wrap { display: flex; flex-direction: column; gap: 8px; }
+.bg-mode-tabs { display: flex; gap: 4px; margin-bottom: 2px; }
+.bg-tab { flex: 1; padding: 5px; border-radius: 6px; border: 1px solid var(--border); background: transparent; color: var(--text-muted); font-size: 11px; font-family: 'Inter', sans-serif; cursor: pointer; text-align: center; transition: background 0.15s, color 0.15s; }
+.bg-tab.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+.custom-solid { display: flex; align-items: center; gap: 8px; }
+.custom-solid input[type="color"] { width: 36px; height: 30px; border-radius: 6px; border: 1px solid var(--border); padding: 2px; background: var(--bg); cursor: pointer; }
+.custom-solid input[type="text"] { flex: 1; }
+.gradient-stops { display: flex; flex-direction: column; gap: 6px; }
+.stop-row { display: flex; align-items: center; gap: 6px; }
+.stop-row input[type="color"] { width: 30px; height: 26px; border-radius: 5px; border: 1px solid var(--border); padding: 1px; background: var(--bg); cursor: pointer; flex-shrink: 0; }
+.stop-row input[type="text"] { flex: 1; font-size: 11px; padding: 4px 7px; }
+.stop-row button { background: transparent; border: 1px solid var(--border); border-radius: 5px; color: var(--text-faint); cursor: pointer; font-size: 13px; width: 24px; height: 24px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.stop-row button:hover { border-color: var(--red); color: var(--red); }
+.gradient-controls { display: flex; gap: 6px; align-items: center; }
+.gradient-controls select { font-size: 11px; padding: 4px 24px 4px 7px; }
+.add-stop-btn { padding: 5px 10px; border-radius: 6px; border: 1px dashed var(--border-hover); background: transparent; color: var(--text-muted); font-size: 11px; font-family: 'Inter', sans-serif; cursor: pointer; width: 100%; transition: border-color 0.15s; }
+.add-stop-btn:hover { border-color: var(--accent); color: var(--accent); }
+.gradient-preview { height: 28px; border-radius: 7px; border: 1px solid var(--border); margin-top: 2px; }
+#bgModePresets { display: block; }
+#bgModeCustom { display: none; }
+
+/* Main */
+.main { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--bg); }
+.topbar { height: 54px; flex-shrink: 0; border-bottom: 1px solid var(--border); background: var(--surface); display: flex; align-items: center; padding: 0 18px; gap: 8px; }
+.btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: var(--radius); border: 1px solid var(--border-hover); background: var(--surface2); color: var(--text-muted); font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+.btn:hover { background: rgba(255,255,255,0.06); color: var(--text); }
+.btn-primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-hover); border-color: var(--accent-hover); color: #fff; }
+.status-badge { margin-left: auto; font-size: 11px; color: var(--text-faint); display: flex; align-items: center; gap: 5px; }
+.status-dot { width: 6px; height: 6px; border-radius: 50%; background: #28c840; }
+.canvas-wrap { flex: 1; overflow: auto; display: flex; align-items: center; justify-content: center; padding: 40px; background: var(--bg); background-image: radial-gradient(circle at 50% 50%, rgba(127,119,221,0.04) 0%, transparent 70%); }
+.snap-canvas { display: inline-block; flex-shrink: 0; }
+.window-frame { overflow: hidden; }
+.window-bar { height: 38px; display: flex; align-items: center; padding: 0 14px; gap: 7px; }
+.dot { width: 12px; height: 12px; border-radius: 50%; }
+.dot.red { background: var(--red); } .dot.yellow { background: var(--yellow); } .dot.green { background: var(--green); }
+.win-title-el { flex: 1; text-align: center; font-size: 12px; font-family: 'Fira Code', monospace; opacity: 0.45; color: #fff; }
+.code-block { overflow: auto; }
+pre { margin: 0; }
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        </div>
+        CodeSnap
+      </div>
+    </div>
+    <div class="sidebar-body">
+
+      <div>
+        <div class="section-label">Code</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="field">
+            <label>Language</label>
+            <select id="lang">
+              <option value="javascript">JavaScript</option>
+              <option value="typescript">TypeScript</option>
+              <option value="python">Python</option>
+              <option value="lua">Lua</option>
+              <option value="css">CSS</option>
+              <option value="html">HTML</option>
+              <option value="bash">Bash / Shell</option>
+              <option value="json">JSON</option>
+              <option value="rust">Rust</option>
+              <option value="go">Go</option>
+              <option value="java">Java</option>
+              <option value="cpp">C++</option>
+              <option value="sql">SQL</option>
+              <option value="php">PHP</option>
+              <option value="ruby">Ruby</option>
+              <option value="swift">Swift</option>
+              <option value="kotlin">Kotlin</option>
+              <option value="csharp">C#</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Code</label>
+            <textarea id="codeInput" spellcheck="false">function greet(name) {
+  const message = `Hello, ${name}!`;
+  console.log(message);
+  return message;
+}
+
+greet("World");</textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div>
+        <div class="section-label">Theme</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="field">
+            <label>Color scheme</label>
+            <select id="theme">
+              <option value="dark-monokai">Dark — Monokai</option>
+              <option value="dark-dracula">Dark — Dracula</option>
+              <option value="dark-one">Dark — One Dark</option>
+              <option value="dark-night-owl">Dark — Night Owl</option>
+              <option value="light-github">Light — GitHub</option>
+              <option value="light-solarized">Light — Solarized</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Font family</label>
+            <select id="fontFamily">
+              <option value="'Fira Code', monospace">Fira Code</option>
+              <option value="'JetBrains Mono', monospace">JetBrains Mono</option>
+              <option value="'Source Code Pro', monospace">Source Code Pro</option>
+              <option value="'Inconsolata', monospace">Inconsolata</option>
+              <option value="monospace">System Mono</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Font size</label>
+            <div class="range-row">
+              <input type="range" id="fontSize" min="11" max="22" value="14">
+              <span class="range-val" id="fontSizeVal">14px</span>
+            </div>
+          </div>
+          <div class="field">
+            <label>Line height</label>
+            <div class="range-row">
+              <input type="range" id="lineHeight" min="14" max="32" value="22">
+              <span class="range-val" id="lineHeightVal">1.6</span>
+            </div>
+          </div>
+          <div class="toggle-row">
+            <span>Font ligatures</span>
+            <label class="toggle"><input type="checkbox" id="ligatures" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div>
+        <div class="section-label">Window</div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="field">
+            <label>File title</label>
+            <input type="text" id="winTitle" value="index.js" maxlength="50">
+          </div>
+          <div class="toggle-row">
+            <span>Title bar</span>
+            <label class="toggle"><input type="checkbox" id="showBar" checked><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+          </div>
+          <div class="toggle-row">
+            <span>Line numbers</span>
+            <label class="toggle"><input type="checkbox" id="showLines"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div>
+        <div class="section-label">Background</div>
+        <div class="color-picker-wrap">
+
+          <div class="bg-mode-tabs">
+            <button class="bg-tab active" id="tabPresets" onclick="switchBgMode('presets')">Presets</button>
+            <button class="bg-tab" id="tabSolid" onclick="switchBgMode('solid')">Solid</button>
+            <button class="bg-tab" id="tabGradient" onclick="switchBgMode('gradient')">Gradient</button>
+          </div>
+
+          <!-- Presets -->
+          <div id="bgModePresets">
+            <div class="swatch-grid" id="bgSwatches">
+              <div class="swatch active" data-bg="linear-gradient(135deg,#7F77DD,#AFA9EC)" style="background:linear-gradient(135deg,#7F77DD,#AFA9EC)"></div>
+              <div class="swatch" data-bg="linear-gradient(135deg,#0f2027,#203a43,#2c5364)" style="background:linear-gradient(135deg,#0f2027,#203a43,#2c5364)"></div>
+              <div class="swatch" data-bg="linear-gradient(135deg,#1D9E75,#5DCAA5)" style="background:linear-gradient(135deg,#1D9E75,#5DCAA5)"></div>
+              <div class="swatch" data-bg="linear-gradient(135deg,#D4537E,#ED93B1)" style="background:linear-gradient(135deg,#D4537E,#ED93B1)"></div>
+              <div class="swatch" data-bg="linear-gradient(135deg,#BA7517,#EF9F27)" style="background:linear-gradient(135deg,#BA7517,#EF9F27)"></div>
+              <div class="swatch" data-bg="linear-gradient(135deg,#E24B4A,#F09595)" style="background:linear-gradient(135deg,#E24B4A,#F09595)"></div>
+              <div class="swatch" data-bg="linear-gradient(135deg,#185FA5,#85B7EB)" style="background:linear-gradient(135deg,#185FA5,#85B7EB)"></div>
+              <div class="swatch" data-bg="linear-gradient(135deg,#3a1c71,#d76d77,#ffaf7b)" style="background:linear-gradient(135deg,#3a1c71,#d76d77,#ffaf7b)"></div>
+              <div class="swatch" data-bg="linear-gradient(135deg,#134e5e,#71b280)" style="background:linear-gradient(135deg,#134e5e,#71b280)"></div>
+              <div class="swatch" data-bg="linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)" style="background:linear-gradient(135deg,#1a1a2e,#16213e,#0f3460)"></div>
+              <div class="swatch" data-bg="#1a1a2e" style="background:#1a1a2e;border-color:rgba(255,255,255,0.1)"></div>
+              <div class="swatch" data-bg="#ffffff" style="background:#fff;border-color:rgba(0,0,0,0.15)"></div>
+              <div class="swatch" data-bg="transparent" style="background:repeating-conic-gradient(#555 0% 25%,#333 0% 50%) 0 0/12px 12px;border-color:rgba(255,255,255,0.1)"></div>
+            </div>
+          </div>
+
+          <!-- Solid -->
+          <div id="bgModeCustom" style="display:none">
+            <div id="solidPanel" style="display:flex;flex-direction:column;gap:8px">
+              <div class="custom-solid">
+                <input type="color" id="solidColor" value="#7F77DD">
+                <input type="text" id="solidHex" value="#7F77DD" placeholder="#rrggbb" style="font-family:'Fira Code',monospace;font-size:12px">
+              </div>
+              <div style="height:28px;border-radius:7px;border:1px solid var(--border)" id="solidPreview"></div>
+            </div>
+            <div id="gradientPanel" style="display:none;flex-direction:column;gap:8px">
+              <div class="gradient-controls">
+                <select id="gradAngle" style="flex:1">
+                  <option value="135deg">↘ 135°</option>
+                  <option value="90deg">↓ 90°</option>
+                  <option value="45deg">↗ 45°</option>
+                  <option value="180deg">→ 180°</option>
+                  <option value="0deg">↑ 0°</option>
+                  <option value="225deg">↙ 225°</option>
+                </select>
+              </div>
+              <div class="gradient-stops" id="gradStops"></div>
+              <button class="add-stop-btn" onclick="addGradientStop()">+ Add color stop</button>
+              <div class="gradient-preview" id="gradientPreview"></div>
+            </div>
+          </div>
+
+          <div class="field" style="margin-top:4px">
+            <label>Padding</label>
+            <div class="range-row">
+              <input type="range" id="padding" min="16" max="80" value="40">
+              <span class="range-val" id="paddingVal">40px</span>
+            </div>
+          </div>
+          <div class="field">
+            <label>Window shadow</label>
+            <div class="range-row">
+              <input type="range" id="shadow" min="0" max="60" value="30">
+              <span class="range-val" id="shadowVal">30</span>
+            </div>
+          </div>
+          <div class="field">
+            <label>Corner radius</label>
+            <div class="range-row">
+              <input type="range" id="radius" min="0" max="20" value="10">
+              <span class="range-val" id="radiusVal">10px</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="btn btn-primary" id="downloadBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Download PNG
+      </button>
+      <button class="btn" id="copyBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+        Copy image
+      </button>
+      <div class="status-badge"><div class="status-dot"></div>Ready</div>
+    </div>
+
+    <div class="canvas-wrap">
+      <div class="snap-canvas" id="snapCanvas">
+        <div class="window-frame" id="winFrame">
+          <div class="window-bar" id="winBar">
+            <div class="dot red"></div><div class="dot yellow"></div><div class="dot green"></div>
+            <div class="win-title-el" id="winTitleEl">index.js</div>
+          </div>
+          <div class="code-block" id="codeBlock">
+            <pre id="highlighted"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script>
+const themes = {
+  'dark-monokai':    { hlStyle:'monokai',        barBg:'#272822', codeBg:'#272822', fg:'#f8f8f2' },
+  'dark-dracula':    { hlStyle:'atom-one-dark',   barBg:'#282a36', codeBg:'#282a36', fg:'#f8f8f2' },
+  'dark-one':        { hlStyle:'atom-one-dark',   barBg:'#21252b', codeBg:'#282c34', fg:'#abb2bf' },
+  'dark-night-owl':  { hlStyle:'night-owl',       barBg:'#011627', codeBg:'#011627', fg:'#d6deeb' },
+  'light-github':    { hlStyle:'github',          barBg:'#f6f8fa', codeBg:'#ffffff', fg:'#24292e' },
+  'light-solarized': { hlStyle:'solarized-light', barBg:'#eee8d5', codeBg:'#fdf6e3', fg:'#657b83' },
+};
+
+const $ = id => document.getElementById(id);
+let activeBg = 'linear-gradient(135deg,#7F77DD,#AFA9EC)';
+let bgMode = 'presets'; // presets | solid | gradient
+let gradientStops = [{ color: '#7F77DD' }, { color: '#AFA9EC' }];
+
+// ─── BG MODE SWITCHING ───────────────────────────────────────
+function switchBgMode(mode) {
+  bgMode = mode;
+  document.querySelectorAll('.bg-tab').forEach(t => t.classList.remove('active'));
+  $('tab' + mode.charAt(0).toUpperCase() + mode.slice(1)).classList.add('active');
+
+  if (mode === 'presets') {
+    $('bgModePresets').style.display = 'block';
+    $('bgModeCustom').style.display = 'none';
+  } else {
+    $('bgModePresets').style.display = 'none';
+    $('bgModeCustom').style.display = 'block';
+    $('solidPanel').style.display = mode === 'solid' ? 'flex' : 'none';
+    $('gradientPanel').style.display = mode === 'gradient' ? 'flex' : 'none';
+    if (mode === 'solid') updateSolidBg();
+    if (mode === 'gradient') updateGradientBg();
+  }
+}
+
+// ─── SOLID COLOR ─────────────────────────────────────────────
+function updateSolidBg() {
+  const hex = $('solidHex').value.trim();
+  $('solidPreview').style.background = hex;
+  activeBg = hex;
+  render();
+}
+$('solidColor').addEventListener('input', e => {
+  $('solidHex').value = e.target.value;
+  updateSolidBg();
+});
+$('solidHex').addEventListener('input', e => {
+  const v = e.target.value.trim();
+  if (/^#[0-9a-fA-F]{6}$/.test(v)) {
+    $('solidColor').value = v;
+    updateSolidBg();
+  }
+});
+
+// ─── GRADIENT ────────────────────────────────────────────────
+function renderStopsList() {
+  const container = $('gradStops');
+  container.innerHTML = '';
+  gradientStops.forEach((stop, i) => {
+    const row = document.createElement('div');
+    row.className = 'stop-row';
+    row.innerHTML = `
+      <input type="color" value="${stop.color}" onchange="updateStop(${i}, this.value)">
+      <input type="text" value="${stop.color}" style="font-family:'Fira Code',monospace;font-size:11px" oninput="updateStopHex(${i}, this.value)">
+      ${gradientStops.length > 2 ? `<button onclick="removeStop(${i})">✕</button>` : ''}
+    `;
+    container.appendChild(row);
+  });
+  updateGradientBg();
+}
+
+function updateStop(i, val) {
+  gradientStops[i].color = val;
+  // sync the text input in same row
+  const rows = $('gradStops').querySelectorAll('.stop-row');
+  rows[i].querySelector('input[type="text"]').value = val;
+  updateGradientBg();
+}
+
+function updateStopHex(i, val) {
+  if (/^#[0-9a-fA-F]{6}$/.test(val)) {
+    gradientStops[i].color = val;
+    const rows = $('gradStops').querySelectorAll('.stop-row');
+    rows[i].querySelector('input[type="color"]').value = val;
+    updateGradientBg();
+  }
+}
+
+function addGradientStop() {
+  gradientStops.push({ color: '#ffffff' });
+  renderStopsList();
+}
+
+function removeStop(i) {
+  gradientStops.splice(i, 1);
+  renderStopsList();
+}
+
+function updateGradientBg() {
+  const angle = $('gradAngle').value;
+  const stops = gradientStops.map(s => s.color).join(', ');
+  const grad = `linear-gradient(${angle}, ${stops})`;
+  $('gradientPreview').style.background = grad;
+  activeBg = grad;
+  render();
+}
+
+$('gradAngle').addEventListener('change', () => { if (bgMode === 'gradient') updateGradientBg(); });
+
+renderStopsList();
+
+// ─── PRESET SWATCHES ─────────────────────────────────────────
+document.querySelectorAll('.swatch').forEach(s => {
+  s.addEventListener('click', () => {
+    document.querySelectorAll('.swatch').forEach(x => x.classList.remove('active'));
+    s.classList.add('active');
+    activeBg = s.dataset.bg;
+    render();
+  });
+});
+
+// ─── RENDER ──────────────────────────────────────────────────
+function render() {
+  const code       = $('codeInput').value;
+  const lang       = $('lang').value;
+  const themeKey   = $('theme').value;
+  const fontSize   = +$('fontSize').value;
+  const lineHeight = +$('lineHeight').value;
+  const fontFamily = $('fontFamily').value;
+  const padding    = +$('padding').value;
+  const shadow     = +$('shadow').value;
+  const radius     = +$('radius').value;
+  const showBar    = $('showBar').checked;
+  const showLines  = $('showLines').checked;
+  const ligatures  = $('ligatures').checked;
+  const title      = $('winTitle').value;
+  const t          = themes[themeKey];
+
+  $('hlTheme').href = `https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/${t.hlStyle}.min.css`;
+
+  const canvas = $('snapCanvas');
+  canvas.style.background = activeBg === 'transparent' ? 'transparent' : activeBg;
+  canvas.style.padding = padding + 'px';
+
+  const frame = $('winFrame');
+  frame.style.borderRadius = radius + 'px';
+  frame.style.overflow = 'hidden';
+  frame.style.boxShadow = shadow > 0
+    ? `0 ${Math.round(shadow * 0.6)}px ${shadow * 2}px rgba(0,0,0,${(shadow / 100).toFixed(2)})`
+    : 'none';
+
+  const bar = $('winBar');
+  bar.style.display = showBar ? 'flex' : 'none';
+  bar.style.background = t.barBg;
+  bar.style.borderBottom = '1px solid rgba(128,128,128,0.12)';
+  $('winTitleEl').textContent = title;
+
+  const codeBlock = $('codeBlock');
+  codeBlock.style.background = t.codeBg;
+  codeBlock.style.padding = '1.2rem 1.4rem';
+
+  let highlighted;
+  try {
+    highlighted = hljs.highlight(code, { language: lang, ignoreIllegals: true }).value;
+  } catch(e) {
+    highlighted = hljs.highlightAuto(code).value;
+  }
+
+  const pre = $('highlighted');
+  pre.style.fontFamily = fontFamily;
+  pre.style.fontSize = fontSize + 'px';
+  pre.style.lineHeight = lineHeight + 'px';
+  pre.style.fontVariantLigatures = ligatures ? 'normal' : 'none';
+  pre.style.color = t.fg;
+  pre.style.background = 'transparent';
+  pre.style.margin = '0';
+
+  if (showLines) {
+    const lines = highlighted.split('\n');
+    const nums = lines.map((_, i) =>
+      `<span style="display:block;line-height:${lineHeight}px;color:rgba(128,128,128,0.4);text-align:right;user-select:none">${i+1}</span>`
+    ).join('');
+    const codeLines = lines.map(l =>
+      `<span style="display:block;line-height:${lineHeight}px">${l||' '}</span>`
+    ).join('');
+    pre.innerHTML = `<div style="display:flex;gap:16px">
+      <div style="display:flex;flex-direction:column;padding-right:12px;border-right:1px solid rgba(128,128,128,0.2);min-width:2ch">${nums}</div>
+      <div style="flex:1">${codeLines}</div>
+    </div>`;
+  } else {
+    pre.innerHTML = highlighted;
+  }
+}
+
+// ─── RANGE INPUTS ────────────────────────────────────────────
+[['fontSize','fontSizeVal', v => v+'px'],
+ ['lineHeight','lineHeightVal', v => (v/13.75).toFixed(1)],
+ ['padding','paddingVal', v => v+'px'],
+ ['shadow','shadowVal', v => v],
+ ['radius','radiusVal', v => v+'px']
+].forEach(([id, valId, fmt]) => {
+  $(id).addEventListener('input', () => { $(valId).textContent = fmt(+$(id).value); render(); });
+});
+['codeInput','lang','theme','fontFamily','winTitle'].forEach(id => {
+  $(id).addEventListener('input', render);
+  $(id).addEventListener('change', render);
+});
+['showBar','showLines','ligatures'].forEach(id => $(id).addEventListener('change', render));
+
+// ─── DOWNLOAD (Canvas-based, no html2canvas CORS issues) ─────
+const ICON_DL = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>`;
+const ICON_CP = `<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>`;
+
+function hexToRgb(hex) {
+  hex = hex.replace('#','');
+  if (hex.length === 3) hex = hex.split('').map(x=>x+x).join('');
+  const n = parseInt(hex, 16);
+  return [n>>16, (n>>8)&255, n&255];
+}
+
+function parseColor(str) {
+  const d = document.createElement('div');
+  d.style.color = str;
+  document.body.appendChild(d);
+  const c = getComputedStyle(d).color;
+  document.body.removeChild(d);
+  const m = c.match(/[\d.]+/g);
+  return m ? m.map(Number) : [0,0,0,1];
+}
+
+async function buildCanvas() {
+  const scale = 3;
+  const themeKey = $('theme').value;
+  const t = themes[themeKey];
+  const fontSize = +$('fontSize').value;
+  const lh = +$('lineHeight').value;
+  const fontFamily = $('fontFamily').value.split(',')[0].replace(/'/g,'').trim();
+  const padding = +$('padding').value;
+  const shadow = +$('shadow').value;
+  const radius = +$('radius').value;
+  const showBar = $('showBar').checked;
+  const showLines = $('showLines').checked;
+  const ligatures = $('ligatures').checked;
+  const title = $('winTitle').value;
+  const code = $('codeInput').value;
+  const lang = $('lang').value;
+
+  // Wait for fonts
+  await document.fonts.ready;
+
+  // Parse highlighted spans from DOM
+  const pre = $('highlighted');
+  const codeBlock = $('codeBlock');
+  const snapEl = $('snapCanvas');
+  const frameEl = $('winFrame');
+
+  const rect = snapEl.getBoundingClientRect();
+  const W = Math.round(rect.width);
+  const H = Math.round(rect.height);
+
+  const cvs = document.createElement('canvas');
+  cvs.width = W * scale;
+  cvs.height = H * scale;
+  const ctx = cvs.getContext('2d');
+  ctx.scale(scale, scale);
+
+  // Background
+  if (activeBg === 'transparent') {
+    ctx.clearRect(0, 0, W, H);
+  } else if (activeBg.startsWith('linear-gradient')) {
+    // Parse gradient
+    const angleMatch = activeBg.match(/(\d+)deg/);
+    const angle = angleMatch ? parseInt(angleMatch[1]) : 135;
+    const colorsMatch = activeBg.match(/linear-gradient\([^,]+,(.*)\)/s);
+    const colorStr = colorsMatch ? colorsMatch[1] : '#7F77DD,#AFA9EC';
+    const colorList = colorStr.split(',').map(s => s.trim()).filter(s => s.startsWith('#'));
+
+    const rad = (angle - 90) * Math.PI / 180;
+    const len = Math.sqrt(W*W + H*H);
+    const cx = W/2, cy = H/2;
+    const x0 = cx - Math.cos(rad)*len/2, y0 = cy - Math.sin(rad)*len/2;
+    const x1 = cx + Math.cos(rad)*len/2, y1 = cy + Math.sin(rad)*len/2;
+    const grad = ctx.createLinearGradient(x0, y0, x1, y1);
+    colorList.forEach((c, i) => {
+      try { grad.addColorStop(i / (colorList.length - 1), c); } catch(e){}
+    });
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, W, H);
+  } else {
+    ctx.fillStyle = activeBg;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  // Frame rect
+  const frameRect = frameEl.getBoundingClientRect();
+  const snapRect = snapEl.getBoundingClientRect();
+  const fx = frameRect.left - snapRect.left;
+  const fy = frameRect.top - snapRect.top;
+  const fw = frameRect.width;
+  const fh = frameRect.height;
+
+  // Shadow
+  if (shadow > 0) {
+    ctx.save();
+    ctx.shadowColor = `rgba(0,0,0,${(shadow/100).toFixed(2)})`;
+    ctx.shadowBlur = shadow * 2;
+    ctx.shadowOffsetY = Math.round(shadow * 0.6);
+    roundRect(ctx, fx, fy, fw, fh, radius);
+    ctx.fillStyle = t.codeBg;
+    ctx.fill();
+    ctx.restore();
+  }
+
+  // Window frame bg
+  roundRect(ctx, fx, fy, fw, fh, radius);
+  ctx.fillStyle = t.codeBg;
+  ctx.fill();
+  ctx.save();
+  ctx.beginPath();
+  roundRectPath(ctx, fx, fy, fw, fh, radius);
+  ctx.clip();
+
+  // Title bar
+  if (showBar) {
+    ctx.fillStyle = t.barBg;
+    ctx.fillRect(fx, fy, fw, 38);
+    ctx.strokeStyle = 'rgba(128,128,128,0.12)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(fx, fy+38); ctx.lineTo(fx+fw, fy+38); ctx.stroke();
+    // Dots
+    const dots = [['#ff5f57', fx+14], ['#febc2e', fx+30], ['#28c840', fx+46]];
+    dots.forEach(([col, dx]) => {
+      ctx.beginPath();
+      ctx.arc(dx, fy+19, 6, 0, Math.PI*2);
+      ctx.fillStyle = col;
+      ctx.fill();
+    });
+    // Title text
+    ctx.fillStyle = t.barBg.startsWith('#f') ? 'rgba(0,0,0,0.35)' : 'rgba(255,255,255,0.4)';
+    ctx.font = `${fontSize-2}px "${fontFamily}", monospace`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(title, fx + fw/2, fy + 19);
+    ctx.textAlign = 'left';
+  }
+
+  // Code area
+  const codeY = fy + (showBar ? 38 : 0);
+  ctx.fillStyle = t.codeBg;
+  ctx.fillRect(fx, codeY, fw, fh - (showBar ? 38 : 0));
+
+  // Draw code text
+  const codeX = fx + 22;
+  let textY = codeY + 19;
+  const codeLines = code.split('\n');
+
+  ctx.font = `400 ${fontSize}px "${fontFamily}", monospace`;
+  if (!ligatures) ctx.fontVariantLigatures = 'none';
+
+  // Get colored spans from DOM for accurate coloring
+  const domLines = getCodeLines(pre, codeLines.length, lh);
+
+  // Line numbers
+  let lineNumWidth = 0;
+  if (showLines) {
+    lineNumWidth = ctx.measureText(String(codeLines.length)).width + 28;
+    // Gutter bg
+    ctx.fillStyle = t.codeBg;
+    ctx.fillRect(fx, codeY, lineNumWidth + 14, fh - (showBar ? 38 : 0));
+    // Divider
+    ctx.strokeStyle = 'rgba(128,128,128,0.2)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(fx + lineNumWidth + 14, codeY);
+    ctx.lineTo(fx + lineNumWidth + 14, codeY + fh);
+    ctx.stroke();
+  }
+
+  // Render each line
+  domLines.forEach((segments, lineIdx) => {
+    const y = textY + lineIdx * lh + lh/2 - 1;
+    if (showLines) {
+      ctx.font = `400 ${fontSize}px "${fontFamily}", monospace`;
+      ctx.fillStyle = 'rgba(128,128,128,0.4)';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(String(lineIdx + 1), fx + lineNumWidth + 2, y);
+      ctx.textAlign = 'left';
+    }
+    let x = codeX + (showLines ? lineNumWidth + 14 : 0);
+    segments.forEach(seg => {
+      ctx.fillStyle = seg.color || t.fg;
+      ctx.font = `${seg.bold ? 600 : 400} ${fontSize}px "${fontFamily}", monospace`;
+      ctx.textBaseline = 'middle';
+      ctx.fillText(seg.text, x, y);
+      x += ctx.measureText(seg.text).width;
+    });
+  });
+
+  ctx.restore();
+  return cvs;
+}
+
+function roundRect(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  roundRectPath(ctx, x, y, w, h, r);
+}
+function roundRectPath(ctx, x, y, w, h, r) {
+  ctx.beginPath();
+  ctx.moveTo(x + r, y);
+  ctx.lineTo(x + w - r, y);
+  ctx.arcTo(x + w, y, x + w, y + r, r);
+  ctx.lineTo(x + w, y + h - r);
+  ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+  ctx.lineTo(x + r, y + h);
+  ctx.arcTo(x, y + h, x, y + h - r, r);
+  ctx.lineTo(x, y + r);
+  ctx.arcTo(x, y, x + r, y, r);
+  ctx.closePath();
+}
+
+function getCodeLines(preEl, lineCount, lh) {
+  // Walk the pre element and collect colored text segments per line
+  const result = Array.from({length: lineCount}, () => []);
+  let lineIdx = 0;
+
+  function walk(node, color, bold) {
+    if (node.nodeType === 3) {
+      const parts = node.textContent.split('\n');
+      parts.forEach((part, i) => {
+        if (i > 0) lineIdx++;
+        if (part && lineIdx < lineCount) {
+          result[lineIdx].push({ text: part, color, bold });
+        }
+      });
+    } else if (node.nodeType === 1) {
+      const cs = getComputedStyle(node);
+      const c = cs.color !== 'rgba(0, 0, 0, 0)' && cs.color !== '' ? cs.color : color;
+      const b = cs.fontWeight >= 600 || bold;
+      node.childNodes.forEach(child => walk(child, c, b));
+    }
+  }
+  walk(preEl, null, false);
+  // ensure all lines have at least empty
+  for (let i = 0; i < lineCount; i++) if (!result[i]) result[i] = [];
+  return result;
+}
+
+$('downloadBtn').addEventListener('click', async () => {
+  const btn = $('downloadBtn');
+  btn.innerHTML = 'Saving…';
+  btn.disabled = true;
+  try {
+    const cvs = await buildCanvas();
+    const a = document.createElement('a');
+    a.href = cvs.toDataURL('image/png');
+    a.download = 'codesnap.png';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  } catch(e) {
+    console.error(e);
+    alert('Download failed: ' + e.message);
+  }
+  btn.disabled = false;
+  btn.innerHTML = ICON_DL + ' Download PNG';
+});
+
+$('copyBtn').addEventListener('click', async () => {
+  const btn = $('copyBtn');
+  btn.textContent = 'Copying…';
+  try {
+    const cvs = await buildCanvas();
+    cvs.toBlob(async blob => {
+      try {
+        await navigator.clipboard.write([new ClipboardItem({'image/png': blob})]);
+        btn.innerHTML = '✓ Copied!';
+        setTimeout(() => { btn.innerHTML = ICON_CP + ' Copy image'; }, 2000);
+      } catch(e) {
+        btn.innerHTML = ICON_CP + ' Copy image';
+      }
+    });
+  } catch(e) {
+    btn.innerHTML = ICON_CP + ' Copy image';
+  }
+});
+
+setTimeout(render, 150);
+</script>
+</body>
+</html>
