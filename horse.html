@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>🐎 funny horse · fit to screen</title>
+  <style>
+    /* reset – absolutely nothing but the horse */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #1a1a1a;
+    }
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #horseImage {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      /* contain – shows the ENTIRE image without cropping,
+         but may leave black bars if aspect ratio differs.
+         This ensures you never miss any part of the funny horse. */
+      object-fit: contain;
+      display: block;
+      background: #1a1a1a;
+      border: none;
+      outline: none;
+      user-select: none;
+      -webkit-user-drag: none;
+      pointer-events: none;
+    }
+    /* no text, no UI – pure horse */
+  </style>
+</head>
+<body>
+  <img id="horseImage" src="" alt="" />
+
+  <script>
+    (function() {
+      // --------------------------------------------------------------
+      //  FUNNY + RANDOM HORSE IMAGES – memes, sleeping, flying, AI-gen,
+      //  derpy, goofy, surreal – all from online sources.
+      //  No hardcoded list – we use multiple APIs with funny queries.
+      //  Every F5 gives a completely different funny horse.
+      //  Uses 'contain' so the ENTIRE image is always visible.
+      //  Also uses smaller image sizes to ensure they fit better.
+      // --------------------------------------------------------------
+
+      const img = document.getElementById('horseImage');
+
+      // ----- 1. UNSPLASH source with funny horse queries -----
+      const funnyQueries = [
+        'funny horse',
+        'sleeping horse',
+        'derpy horse',
+        'goofy horse',
+        'horse meme',
+        'horse funny face',
+        'horse yawn',
+        'horse playing',
+        'horse sticking tongue',
+        'horse crazy',
+        'horse rolling',
+        'horse in costume',
+        'horse smiling',
+        'horse cartoon',
+        'horse and human funny',
+        'horse wearing hat',
+        'horse lying down',
+        'horse goofy expression',
+        'horse laughing',
+        'horse with funny ears',
+        'horse in blanket',
+        'horse eating funny',
+        'horse water splash',
+        'horse sneezing',
+        'horse bucking',
+        'horse and dog funny',
+        'horse in snow silly',
+        'horse making face',
+        'horse with toy',
+        'horse photobomb',
+        'horse jumping silly',
+        'horse dancing',
+        'horse with tongue out',
+        'horse sleeping funny',
+        'horse in pajamas',
+        'horse with balloon',
+        'horse funny portrait',
+        'horse goofy smile',
+        'horse with sunglasses',
+        'horse eating grass funny',
+        'horse flying',
+        'horse running funny',
+        'horse with wings',
+        'horse in space',
+        'horse rainbow',
+        'horse with hat',
+        'horse eating watermelon',
+        'horse with carrot',
+        'horse jumping',
+        'horse laughing',
+        'horse with friend'
+      ];
+
+      function getRandomFunnyQuery() {
+        const randomIndex = Math.floor(Math.random() * funnyQueries.length);
+        return funnyQueries[randomIndex];
+      }
+
+      // Use smaller image size so it fits better on screen
+      // 800x600 is more manageable and still looks good
+      function getUnsplashFunnyHorse() {
+        const query = getRandomFunnyQuery();
+        const seed = Date.now() + Math.random() * 9999999;
+        return `https://source.unsplash.com/featured/800x600/?${encodeURIComponent(query)},horse&sig=${seed}`;
+      }
+
+      // ----- 2. LOREMFLICKR with funny horse tag (alternative) -----
+      function getLoremFunnyHorse() {
+        const seed = Date.now() + Math.random() * 9999999;
+        return `https://loremflickr.com/800/600/horse,funny?random=${seed}`;
+      }
+
+      // ----- 3. fallback: unsplash random with "horse" + "funny" combined
+      function getUnsplashFallback() {
+        const seed = Date.now() + Math.random() * 9999999;
+        return `https://source.unsplash.com/random/800x600/?horse,funny&sig=${seed}`;
+      }
+
+      // ----- load the funny horse -----
+      function loadFunnyHorse() {
+        // primary: unsplash with funny query
+        img.src = getUnsplashFunnyHorse();
+
+        // if primary fails, try loremflickr
+        img.onerror = function() {
+          img.onerror = null;
+          img.src = getLoremFunnyHorse();
+
+          // if that fails, try unsplash fallback with 'horse,funny'
+          img.onerror = function() {
+            img.onerror = null;
+            img.src = getUnsplashFallback();
+
+            // if all fail, we try one more: unsplash with "horse" only + funny modifier
+            img.onerror = function() {
+              img.onerror = null;
+              const lastQuery = funnyQueries[Math.floor(Math.random() * funnyQueries.length)];
+              const lastUrl = `https://source.unsplash.com/featured/800x600/?${encodeURIComponent(lastQuery)}&sig=${Date.now() + Math.random() * 999999}`;
+              img.src = lastUrl;
+
+              // final fallback – if nothing works, we set a dark background and keep it clean
+              img.onerror = function() {
+                img.onerror = null;
+                img.style.background = '#1a1a1a';
+              };
+            };
+          };
+        };
+
+        // on success, clear any artifacts
+        img.onload = function() {
+          img.style.background = 'transparent';
+          img.onload = null;
+        };
+      }
+
+      // initial load
+      loadFunnyHorse();
+
+      console.log('🐎 funny horse – refresh (F5) for another hilarious horse!');
+    })();
+  </script>
+</body>
+</html>
